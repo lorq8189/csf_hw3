@@ -20,8 +20,7 @@ lru (least-recently-used) or fifo evictions*/
 
 
 int main(int argc, char** argv ) {
-    ifstream myfile;
-    myfile.open ("example.txt");
+
 
     int sets, blocks, bytes, exptest;
     sets = atoi(argv[1]);
@@ -85,6 +84,5 @@ int main(int argc, char** argv ) {
         }
     }
 
-    myfile.close();
     return 0;
 }
