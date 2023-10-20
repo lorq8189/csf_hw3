@@ -6,4 +6,4 @@
 Commands and stuff to copy:
 
 rm -f solution.zip
-zip -9r solution.zip Makefile *.h *.c README.txt
+zip -9r solution.zip Makefile *.h *.cpp README.txt
