@@ -7,7 +7,7 @@
 
 struct Slot {
     uint32_t tag;
-    bool valid;
+    bool valid = false;
     uint32_t load_ts,
     access_ts;
 };

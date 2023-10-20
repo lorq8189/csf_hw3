@@ -26,10 +26,10 @@ int main(int argc, char** argv ) {
 
 
     // read arguments from command line
-    int sets, blocks, bytes, exptest;
-    sets = atoi(argv[1]);
-    blocks = atoi(argv[2]);
-    bytes = atoi(argv[3]);
+    int num_sets, num_blocks, num_bytes, exptest;
+    num_sets = atoi(argv[1]);
+    num_blocks = atoi(argv[2]);
+    num_bytes = atoi(argv[3]);
 
     bool writeAlloc = true;
     bool writeThrough = true;
@@ -43,7 +43,7 @@ int main(int argc, char** argv ) {
             return 2;
         }
     }
-    if (bytes < 4)
+    if (num_bytes < 4)
     {
         cerr << "number of bytes must be at least 4\n";
         return 2;
@@ -88,6 +88,19 @@ int main(int argc, char** argv ) {
             return 1;
         }
     }
+
+    // initialize cache configuration
+    Cache cache;
+    cache.sets.resize(num_sets);
+
+    for (int setIndex = 0; setIndex < num_sets; setIndex++) {
+        Set set;
+        set.slots.resize(num_blocks);
+
+        // Add the set to the cache
+        cache.sets[setIndex] = set;
+    }
+
 
     // initialize counting variables
     int total_loads = 0;
