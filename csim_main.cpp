@@ -89,6 +89,15 @@ int main(int argc, char** argv ) {
         }
     }
 
+    // initialize counting variables
+    int total_loads = 0;
+    int total_stores = 0;
+    int load_hits = 0;
+    int load_misses = 0;
+    int store_hits = 0;
+    int store_misses = 0;
+    int total_cycles = 0;
+
     // read from memory trace
     string line;
     while (std::getline(cin, line)) {
@@ -101,8 +110,15 @@ int main(int argc, char** argv ) {
         iss >> operation >> mem_addr >> size;
 
         
-        break;
     }
+
+    // output counting statistics
+    printf("Total loads: %d \n", total_loads);
+    printf("Total stores: %d \n", total_stores);
+    printf("Load hits: %d \n", load_hits);
+    printf("Load misses:%d \n", load_misses);
+    printf("Store misses: %d \n", store_misses);
+    printf("Total cycles: %d \n", total_cycles);
 
     return 0;
 }
