@@ -9,6 +9,7 @@ using std::ofstream;
 using std::ifstream;
 using std::string;
 using std::cerr;
+using std::getline;
 
 
 /*number of sets in the cache (a positive power-of-2)
@@ -83,6 +84,40 @@ int main(int argc, char** argv ) {
             return 1;
         }
     }
+
+// Total loads: count       data[0]
+// Total stores: count
+// Load hits: count
+// Load misses: count
+// Store hits: count
+// Store misses: count
+// Total cycles: count      data[6]
+
+    int data[7] = {0, 0, 0, 0, 0, 0, 0}; //list of stats to keep, in the order above.
+
+    string line = "";
+    char load = '\0';
+    int eol = 0;
+    
+    while (getline(cin, line))
+    {
+        //first parse through to get the mode
+        if (line[0]== 'l')
+            ;
+        else { //load
+
+        } //save
+
+        //read address here
+
+        eol = line[13];
+        //input data here
+    }
+
+    
+
+
+
 
     return 0;
 }
