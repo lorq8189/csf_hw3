@@ -120,7 +120,7 @@ int computeSetIndex(uint32_t mem_addr, int set_index_bits, int offset_index_bits
     
 }
 
-void loadDataMWay(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
+void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
                     int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
 
     Set &set = cache.sets[set_index];
@@ -159,7 +159,7 @@ void loadDataMWay(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &ca
 
 }
 
-void storeWriteAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
     
 
@@ -201,7 +201,7 @@ void storeWriteAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misse
 
 }
 
-void storeWriteAlloBackMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
     
     // check store hit
@@ -248,7 +248,7 @@ void storeWriteAlloBackMway(uint32_t mem_addr, int &store_hits, int &store_misse
 }
 
 
-void storeWriteNoAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
     
     // check store hit
