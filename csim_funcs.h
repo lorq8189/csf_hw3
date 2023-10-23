@@ -53,4 +53,5 @@ void storeWriteNoAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_mis
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 
+
 #endif

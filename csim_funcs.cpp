@@ -178,7 +178,8 @@ void storeWriteAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misse
 
     store_misses += 1;
     total_cycles += 100 * (num_bytes / 4); // simulate write_allocate: bring memory block from main memory to cache
-    // Find an empty slot or the LRU slot within the set
+    // Find an empty slot or the LRU slot within the set 
+    //adding FIFO mod
     Slot* targetSlot = &set.slots[0];
     for (Slot& slot : set.slots) {
         if (!slot.valid) {
@@ -269,6 +270,12 @@ void storeWriteNoAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_mis
 
     return;
 
+}
+
+void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
+                    int tag_index_offset, int &total_cycles, int num_bytes) {
+
+    Set &set = cache.sets[0];
 }
 
 

@@ -64,15 +64,18 @@ int main(int argc, char** argv ) {
         if (operation == 'l') { // load data
             total_loads += 1;
 
-            if (num_sets > 1 && num_blocks > 1) { // m-way set-associative
+            if (num_sets > 1) { // m-way set-associative
                 loadDataMWay(mem_addr, load_hits, load_misses, cache, set_index, 
+                                tag_index_offset, total_cycles, num_bytes);
+            } else if (num_sets == 1) {
+                loadDataMWay(mem_addr, load_hits, load_misses, cache, 0, 
                                 tag_index_offset, total_cycles, num_bytes);
             }
 
         } else { // store data
 
             total_stores += 1;
-            if (num_sets > 1 && num_blocks > 1) { // m-way set-associative
+            if (num_sets > 1) { // m-way set-associative
                 // write_allocate & write_through
                 if (writeAlloc == true && writeThrough == true) {
                     storeWriteAlloThruMway(mem_addr, store_hits, store_misses, 
@@ -83,6 +86,19 @@ int main(int argc, char** argv ) {
                 } else { // no write_allo & write_through
                     storeWriteNoAlloThruMway(mem_addr, store_hits, store_misses, 
                             cache, set_index, tag_index_offset, total_cycles, num_bytes);
+                }
+            } else if (num_sets == 1) {
+
+                // write_allocate & write_through
+                if (writeAlloc == true && writeThrough == true) {
+                    storeWriteAlloThruMway(mem_addr, store_hits, store_misses, 
+                            cache, 0, tag_index_offset, total_cycles, num_bytes);
+                } else if (writeAlloc == true && writeThrough == false) { // write_allocate & write back
+                    storeWriteAlloBackMway(mem_addr, store_hits, store_misses, 
+                            cache, 0, tag_index_offset, total_cycles, num_bytes);
+                } else { // no write_allo & write_through
+                    storeWriteNoAlloThruMway(mem_addr, store_hits, store_misses, 
+                            cache, 0, tag_index_offset, total_cycles, num_bytes);
                 }
             }
 
