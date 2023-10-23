@@ -37,19 +37,19 @@ void initializeCache(Cache &cache, int num_sets, int num_blocks);
 int computeSetIndex(uint32_t mem_addr, int set_index_bits, int offset_index_bits);
 
 // Load data configured with m-way set-associative
-void loadDataMWay(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
+void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
                     int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 // Store data configured with m-way set-associative, write-allocate, write-through
-void storeWriteAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 // Store data configured with m-way set-associative, write-allocate, write-back
-void storeWriteAlloBackMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 // Store data configured with m-way set-associative, no-write-allocate, write-through
-void storeWriteNoAlloThruMway(uint32_t mem_addr, int &store_hits, int &store_misses, 
+void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 

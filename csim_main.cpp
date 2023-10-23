@@ -59,48 +59,33 @@ int main(int argc, char** argv ) {
         iss >> size;
 
         // get set index
-        int set_index = computeSetIndex(mem_addr, set_index_bits, offset_index_bits);
+        int set_index = 0;
+        if (num_sets > 1) {
+            set_index = computeSetIndex(mem_addr, set_index_bits, offset_index_bits);
+        }
         
         if (operation == 'l') { // load data
             total_loads += 1;
 
-            if (num_sets > 1) { // m-way set-associative
-                loadDataMWay(mem_addr, load_hits, load_misses, cache, set_index, 
+            loadData(mem_addr, load_hits, load_misses, cache, set_index, 
                                 tag_index_offset, total_cycles, num_bytes);
-            } else if (num_sets == 1) {
-                loadDataMWay(mem_addr, load_hits, load_misses, cache, 0, 
-                                tag_index_offset, total_cycles, num_bytes);
-            }
 
         } else { // store data
 
             total_stores += 1;
-            if (num_sets > 1) { // m-way set-associative
-                // write_allocate & write_through
-                if (writeAlloc == true && writeThrough == true) {
-                    storeWriteAlloThruMway(mem_addr, store_hits, store_misses, 
-                            cache, set_index, tag_index_offset, total_cycles, num_bytes);
-                } else if (writeAlloc == true && writeThrough == false) { // write_allocate & write back
-                    storeWriteAlloBackMway(mem_addr, store_hits, store_misses, 
-                            cache, set_index, tag_index_offset, total_cycles, num_bytes);
-                } else { // no write_allo & write_through
-                    storeWriteNoAlloThruMway(mem_addr, store_hits, store_misses, 
-                            cache, set_index, tag_index_offset, total_cycles, num_bytes);
-                }
-            } else if (num_sets == 1) {
-
-                // write_allocate & write_through
-                if (writeAlloc == true && writeThrough == true) {
-                    storeWriteAlloThruMway(mem_addr, store_hits, store_misses, 
-                            cache, 0, tag_index_offset, total_cycles, num_bytes);
-                } else if (writeAlloc == true && writeThrough == false) { // write_allocate & write back
-                    storeWriteAlloBackMway(mem_addr, store_hits, store_misses, 
-                            cache, 0, tag_index_offset, total_cycles, num_bytes);
-                } else { // no write_allo & write_through
-                    storeWriteNoAlloThruMway(mem_addr, store_hits, store_misses, 
-                            cache, 0, tag_index_offset, total_cycles, num_bytes);
-                }
+            
+            // write_allocate & write_through
+            if (writeAlloc == true && writeThrough == true) {
+                storeWriteAlloThru(mem_addr, store_hits, store_misses, 
+                        cache, set_index, tag_index_offset, total_cycles, num_bytes);
+            } else if (writeAlloc == true && writeThrough == false) { // write_allocate & write back
+                storeWriteAlloBack(mem_addr, store_hits, store_misses, 
+                        cache, set_index, tag_index_offset, total_cycles, num_bytes);
+            } else { // no write_allo & write_through
+                storeWriteNoAlloThru(mem_addr, store_hits, store_misses, 
+                        cache, set_index, tag_index_offset, total_cycles, num_bytes);
             }
+            
 
         }
         
