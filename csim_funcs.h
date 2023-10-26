@@ -10,7 +10,7 @@ struct Slot {
     uint32_t tag;
     bool valid;
     uint32_t load_ts,
-    access_ts;
+    access_ts;          
     bool dirty;
 };
 struct Set {
@@ -38,20 +38,23 @@ int computeSetIndex(uint32_t mem_addr, int set_index_bits, int offset_index_bits
 
 // Load data configured with m-way set-associative
 void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
-                    int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
+                    int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru);
 
 // Store data configured with m-way set-associative, write-allocate, write-through
 void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
-                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
+                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru);
 
 // Store data configured with m-way set-associative, write-allocate, write-back
 void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses, 
-                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
+                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru);
 
 // Store data configured with m-way set-associative, no-write-allocate, write-through
 void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
+
+void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
+                    int tag_index_offset, int &total_cycles, int num_bytes);
 
 
 #endif

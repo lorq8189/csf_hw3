@@ -68,7 +68,7 @@ int main(int argc, char** argv ) {
             total_loads += 1;
 
             loadData(mem_addr, load_hits, load_misses, cache, set_index, 
-                                tag_index_offset, total_cycles, num_bytes);
+                                tag_index_offset, total_cycles, num_bytes, lru);
 
         } else { // store data
 
@@ -77,16 +77,14 @@ int main(int argc, char** argv ) {
             // write_allocate & write_through
             if (writeAlloc == true && writeThrough == true) {
                 storeWriteAlloThru(mem_addr, store_hits, store_misses, 
-                        cache, set_index, tag_index_offset, total_cycles, num_bytes);
+                        cache, set_index, tag_index_offset, total_cycles, num_bytes, lru);
             } else if (writeAlloc == true && writeThrough == false) { // write_allocate & write back
                 storeWriteAlloBack(mem_addr, store_hits, store_misses, 
-                        cache, set_index, tag_index_offset, total_cycles, num_bytes);
+                        cache, set_index, tag_index_offset, total_cycles, num_bytes, lru);
             } else { // no write_allo & write_through
                 storeWriteNoAlloThru(mem_addr, store_hits, store_misses, 
                         cache, set_index, tag_index_offset, total_cycles, num_bytes);
             }
-            
-
         }
         
     }

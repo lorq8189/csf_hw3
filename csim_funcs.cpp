@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -101,6 +102,7 @@ void initializeCache(Cache &cache, int num_sets, int num_blocks) {
         for (Slot& slot : set.slots) {
             slot.valid = false;
             slot.dirty = false;
+            slot.load_ts = 0;
         }
 
         // Add the set to the cache
@@ -121,30 +123,45 @@ int computeSetIndex(uint32_t mem_addr, int set_index_bits, int offset_index_bits
 }
 
 void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
-                    int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
+                    int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru) {
 
     Set &set = cache.sets[set_index];
-
+ //load hits a lot more than it should, and store misses more than it should
     for (Slot& slot : set.slots) {
         if (slot.valid == true && slot.tag == (mem_addr >> tag_index_offset) ) {
             load_hits += 1;
             total_cycles += 1; // load from the cache
             slot.access_ts = total_cycles;
+            //slot.load_ts = total_cycles;
             return;
         }
     }
 
     load_misses += 1;
     total_cycles += 100 * (num_bytes / 4); // load from main memory
-    // Find an empty slot or the LRU slot within the set
+    // Find an empty slot or the LRU/FIFO slot within the set
     Slot* targetSlot = &set.slots[0];
-    for (Slot& slot : set.slots) {
-        if (!slot.valid) {
-            targetSlot = &slot;
-            break;
+    if (lru)
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.access_ts < (*targetSlot).access_ts) {
+                targetSlot = &slot;
+            }
         }
-        if (slot.access_ts < (*targetSlot).access_ts) {
-            targetSlot = &slot;
+    }
+    else 
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.load_ts < (*targetSlot).load_ts) 
+                targetSlot = &slot;
         }
     }
 
@@ -154,15 +171,17 @@ void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache,
     total_cycles += 1; // store to the cache
     total_cycles += 1; // load from the cache
     (*targetSlot).access_ts = total_cycles; // simulate timestamp update
+    (*targetSlot).load_ts = total_cycles;
 
     return;
 
 }
 
-void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
-                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
-    
 
+//v1.1
+
+void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses, 
+                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru) {
     // check store hit
     Set &set = cache.sets[set_index];
 
@@ -178,16 +197,29 @@ void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses,
 
     store_misses += 1;
     total_cycles += 100 * (num_bytes / 4); // simulate write_allocate: bring memory block from main memory to cache
-    // Find an empty slot or the LRU slot within the set 
-    //adding FIFO mod
+    // Find an empty slot or the LRU slot within the set
     Slot* targetSlot = &set.slots[0];
-    for (Slot& slot : set.slots) {
-        if (!slot.valid) {
-            targetSlot = &slot;
-            break;
+    if (lru)
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.access_ts < (*targetSlot).access_ts) {
+                targetSlot = &slot;
+            }
         }
-        if (slot.access_ts < (*targetSlot).access_ts) {
-            targetSlot = &slot;
+    }
+    else 
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.load_ts < (*targetSlot).load_ts) 
+                targetSlot = &slot;
         }
     }
 
@@ -197,13 +229,13 @@ void storeWriteAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses,
     total_cycles += 1 ; // store to the cache
     total_cycles += 100; // simulate write_though: store immediately to the main memory
     (*targetSlot).access_ts = total_cycles; // Simulate timestamp update
-
+    (*targetSlot).load_ts = total_cycles;
     return;
 
 }
 
 void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses, 
-                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes) {
+                            Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru) {
     
     // check store hit
     Set &set = cache.sets[set_index];
@@ -222,13 +254,27 @@ void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses,
     total_cycles += 100 * (num_bytes / 4); // simulate write_allocate: bring memory block from main memory to cache
     // Find an empty slot or the LRU slot within the set
     Slot* targetSlot = &set.slots[0];
-    for (Slot& slot : set.slots) {
-        if (!slot.valid) {
-            targetSlot = &slot;
-            break;
+    if (lru)
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.access_ts < (*targetSlot).access_ts) {
+                targetSlot = &slot;
+            }
         }
-        if (slot.access_ts < (*targetSlot).access_ts) {
-            targetSlot = &slot;
+    }
+    else 
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.load_ts < (*targetSlot).load_ts) 
+                targetSlot = &slot;
         }
     }
 
@@ -243,6 +289,7 @@ void storeWriteAlloBack(uint32_t mem_addr, int &store_hits, int &store_misses,
     total_cycles += 1; // store to the cache
     (*targetSlot).dirty = true; // simulate write-back: modify the block stored in cache
     (*targetSlot).access_ts = total_cycles; // Simulate timestamp update
+    (*targetSlot).load_ts = total_cycles;
 
     return;
 
@@ -272,10 +319,47 @@ void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses,
 
 }
 
+
 void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
                     int tag_index_offset, int &total_cycles, int num_bytes) {
 
     Set &set = cache.sets[0];
 }
 
-
+/*if (lru)
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.access_ts < (*targetSlot).access_ts) {
+                targetSlot = &slot;
+            }
+        }
+    }
+    else 
+    {
+        for (Slot& slot : set.slots) {
+            if (!slot.valid) {
+                targetSlot = &slot;
+                break;
+            }
+            if (slot.load_ts < (*targetSlot).load_ts) 
+                targetSlot = &slot;
+        }
+    }
+    
+    differences:  
+    Total Loads and stores: no difference
+    Load hits +700,   +618
+    Load misses -700, -618
+    Store hits -86,   +143
+    Store misses +86  -143
+    Total cycles +750274
+    
+    
+    
+    
+    
+    */
