@@ -274,9 +274,3 @@ void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses,
 
 }
 
-
-// void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
-//                     int tag_index_offset, int &total_cycles, int num_bytes) {
-
-//     Set &set = cache.sets[0];
-// }
