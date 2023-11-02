@@ -30,11 +30,21 @@ int logTwo(int x);
 // Read arguments from command line
 int readArgument(char** argv, int &num_sets, int &num_blocks, int &num_bytes, bool &writeAlloc, bool &writeThrough, bool &lru);
 
+//helper function for reading arguments
+int readArgument2(char** argv, bool writeAlloc, bool &writeThrough, bool &lru);
+
 // initialize Cache data structure
 void initializeCache(Cache &cache, int num_sets, int num_blocks);
 
 // Compute set index
 int computeSetIndex(uint32_t mem_addr, int set_index_bits, int offset_index_bits);
+
+//helper function to handle most common steps in loading/storing
+int registerHit(uint32_t mem_addr, int &hits, int &misses, Cache &cache, 
+            int set_index, int tag_index_offset, int &total_cycles, int num_bytes, bool lru, Slot * &target);
+
+//helper function for finding an empty slot or the best one to evict
+Slot * findTarget(Set &set, bool lru);
 
 // Load data configured with m-way set-associative
 void loadData(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
@@ -53,8 +63,8 @@ void storeWriteNoAlloThru(uint32_t mem_addr, int &store_hits, int &store_misses,
                             Cache &cache, int set_index, int tag_index_offset, int &total_cycles, int num_bytes);
 
 
-void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
-                    int tag_index_offset, int &total_cycles, int num_bytes);
+// void loadDataFull(uint32_t mem_addr, int &load_hits, int &load_misses, Cache &cache, 
+//                     int tag_index_offset, int &total_cycles, int num_bytes);
 
 
 #endif

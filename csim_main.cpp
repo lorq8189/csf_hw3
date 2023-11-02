@@ -24,9 +24,8 @@ int main(int argc, char** argv ) {
     bool lru = true;
 
     int res = readArgument(argv, num_sets, num_blocks, num_bytes, writeAlloc, writeThrough, lru);
-    if (res != 0) {
-        return res;
-    }
+    if (res != 0) 
+        return res; //quit out if something went wrong
 
     // initialize cache configuration
     Cache cache;
@@ -90,12 +89,9 @@ int main(int argc, char** argv ) {
     }
 
     // output counting statistics
-    cout << "Total loads: " << total_loads << std::endl;
-    cout << "Total stores: " << total_stores << std::endl;
-    cout << "Load hits: " << load_hits << std::endl;
-    cout << "Load misses: " << load_misses << std::endl;
-    cout << "Store hits: " << store_hits << std::endl;
-    cout << "Store misses: " << store_misses << std::endl;
+    cout << "Total loads: " << total_loads << std::endl << "Total stores: " << total_stores << std::endl;
+    cout << "Load hits: " << load_hits << std::endl << "Load misses: " << load_misses << std::endl;
+    cout << "Store hits: " << store_hits << std::endl << "Store misses: " << store_misses << std::endl;
     cout << "Total cycles: " << total_cycles << std::endl;
 
     return 0;
